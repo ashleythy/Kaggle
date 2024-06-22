@@ -1,3 +1,1 @@
-# Score
-
-- Accuracy: 89.4%
+# Private score: 89.4%

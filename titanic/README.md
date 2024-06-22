@@ -1,3 +1,1 @@
-# Score
-
-- Accuracy: 75%
+# Private score: 75%
