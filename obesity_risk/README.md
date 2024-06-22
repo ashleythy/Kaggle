@@ -1,3 +1,2 @@
-# Score
-
-- Accuracy: 89.4%
+- https://www.kaggle.com/competitions/playground-series-s4e2
+- Late submission public score: 0.89450
