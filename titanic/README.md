@@ -1,1 +1,2 @@
-# Private score: 75%
+- https://www.kaggle.com/competitions/titanic
+- Late submission public score: 0.75837
