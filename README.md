@@ -14,3 +14,5 @@ Kaggle projects
 - https://www.kaggle.com/competitions/playground-series-s4e5/overview
 - Late submission public score: 0.86396
 
+4. June 2024: Power demand prediction (time-series)
+- Non-Kaggle project
