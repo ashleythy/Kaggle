@@ -1,3 +1,12 @@
-**/dataset/
+**/dataset/*
+!**/dataset/.gitkeep
+
+**/artefact/*
+!**/artefact/.gitkeep
+
+**/log/*
+!**/log/.gitkeep
+
 download_csv.ipynb
 **/.DS_Store
+
