@@ -23,23 +23,6 @@ log_dir = os.path.join(
     'log'
 )
 
-# # passenger data
-# passenger_data = {
-#     "prefix": "Mr",
-#     "first_name": "James",
-#     "family_name": "Myles",
-#     "gender": "male",
-#     "age": 30,
-#     "passenger_id": 43,
-#     "number_siblings": 2,
-#     "number_parch": 1,
-#     "ticket_name": "330911",
-#     "cabin_name": "A40",
-#     "pclass": 2,
-#     "fare_price": 50.0,
-#     "embarked_port": "S"
-# }
-
 # configure application
 app = FastAPI()
 
