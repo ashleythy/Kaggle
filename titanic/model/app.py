@@ -1,52 +1,66 @@
-# import uvicorn
-# from fastapi import FastAPI
-# import joblib
-from TitanicPassenger import TitanicPassenger
+import os
+import pickle
+import uvicorn
+from fastapi import FastAPI
 
-# app = FastAPI()
-# joblib_in = open("car-recommender.joblib","rb")
-# model=joblib.load(joblib_in)
+from ml.data import preprocess_data, inference
+from ml.TitanicPassenger import TitanicPassenger
 
-
-# @app.get('/')
-# def index():
-#     return {'message': 'Cars Recommender ML API'}
-
-# @app.post('/car/predict')
-# def predict_car_type(data:CarUser):
-#     data = data.dict()
-#     age=data['age']
-#     gender=data['gender']
-
-#     prediction = model.predict([[age, gender]])
-    
-#     return {
-#         'prediction': prediction[0]
-#     }
-
-# if __name__ == '__main__':
-#     uvicorn.run(app, host='127.0.0.1', port=8000)
-
-from TitanicPassenger import TitanicPassenger
-
-# test 
-def preprocess(data: TitanicPassenger) -> list: 
-    """
-    Preprocess raw input data into format expected by model.
-    """
-    raw_data = data.dict() 
-
-    return raw_data
-
-passenger_data = TitanicPassenger(
-    Age=29.5,
-    SibSp=1,
-    Parch=0,
-    Fare=72.5,
-    len_unq_firstname=6,
-    len_char_firstname='10'
+# model path 
+model_dir = os.path.join(
+    os.path.dirname(__file__),
+    'artefact'
 )
 
-res = preprocess(data = passenger_data)
+model_path = os.path.join(
+    model_dir, 
+    'titanic_predictor.pkl'
+)
 
-print(res)
+# log path 
+log_dir = os.path.join(
+    os.path.dirname(__file__),
+    'log'
+)
+
+# # passenger data
+# passenger_data = {
+#     "prefix": "Mr",
+#     "first_name": "James",
+#     "family_name": "Myles",
+#     "gender": "male",
+#     "age": 30,
+#     "passenger_id": 43,
+#     "number_siblings": 2,
+#     "number_parch": 1,
+#     "ticket_name": "330911",
+#     "cabin_name": "A40",
+#     "pclass": 2,
+#     "fare_price": 50.0,
+#     "embarked_port": "S"
+# }
+
+# configure application
+app = FastAPI()
+
+# load model 
+with open(model_path, 'rb') as file:
+    trained_model = pickle.load(file)
+
+@app.get('/')
+def index():
+    return {'message': 'API to predict if a passenger from the Titanic shipwreck survived or not'}
+
+@app.post('/titanic/predict')
+def predict(passenger_data: TitanicPassenger):
+    print(f"Validated passenger: {passenger_data}")
+
+    # preproces passenger data
+    processed_passenger_data = preprocess_data(passenger=passenger_data)
+
+    preds = inference(model=trained_model, X_data=processed_passenger_data)
+
+    return preds
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='127.0.0.1', port=8000)

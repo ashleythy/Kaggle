@@ -1,6 +1,8 @@
 import pandas as pd 
 import numpy as np
 import re 
+from sklearn.linear_model import LogisticRegression
+from ml.TitanicPassenger import TitanicPassenger
 
 def preprocess_names(
         name: str = 'ashley thoo'
@@ -355,3 +357,117 @@ def preprocess_ticket(
 
 
 
+def preprocess_data(passenger: TitanicPassenger):
+    """
+    Preprocess passenger's data input into a format that is acceptable to be used in the
+    trained model.
+    """
+
+    # passenger characteristics, in correct order
+    # age 
+    age = passenger.age 
+    age_bins_encoded = preprocess_age(age)
+
+    # sibsp 
+    sibsp = passenger.number_siblings 
+
+    # parch 
+    parch = passenger.number_parch 
+
+    # fare 
+    fare = passenger.fare_price 
+
+    # len_unq_firstname, len_char_firstname, len_unq_familyname, len_char_familyname 
+    first_name = passenger.first_name 
+    family_name = passenger.family_name 
+
+    len_unq_firstname, len_char_firstname = preprocess_names(name=first_name)
+    len_unq_familyname, len_char_familyname = preprocess_names(name=family_name)
+
+    # cabin_frequency, cabin_assigned 
+    cabin = passenger.cabin_name
+
+    cabin_frequency, cabin_assigned, cabin_type_A, \
+    cabin_type_B, cabin_type_C, cabin_type_D, \
+    cabin_type_E, cabin_type_F, cabin_type_G = preprocess_cabin(cabin)
+
+    # pclass 
+    pclass = passenger.pclass
+
+    pclass_2, pclass_3 = preprocess_pclass(pclass)
+
+    # gender 
+    gender = passenger.gender 
+
+    sex_male = preprocess_gender(gender)
+
+    # embarkment 
+    embarked = passenger.embarked_port 
+
+    embarked_Q, embarked_S = preprocess_embarked(embarked) 
+
+    # prefix 
+    prefix = passenger.prefix
+
+    prefix_name_Master, prefix_name_Miss, prefix_name_Mlle, \
+    prefix_name_Mr, prefix_name_Mrs, prefix_name_Rev = preprocess_prefix(prefix)
+
+    # ticket type 
+    ticket = passenger.ticket_name
+
+    ticket_type_CA, ticket_type_DIGITS_ONLY, ticket_type_FCC, \
+    ticket_type_LINE, ticket_type_PC, ticket_type_SC, ticket_type_SCH, \
+    ticket_type_SO_PP, ticket_type_SOC, ticket_type_SOTON, ticket_type_W_C = preprocess_ticket(ticket)
+
+    # passenger id 
+    passengerid = passenger.passenger_id
+    passengerid_bins_encoded = preprocess_passengerid(passengerid)
+
+    # rearrange into a list -> array -> df
+    preprocessed_list = [
+    age, sibsp, parch, fare, len_unq_firstname, len_char_firstname, \
+    len_unq_familyname, len_char_familyname, cabin_frequency, cabin_assigned, \
+    pclass_2, pclass_3, sex_male, embarked_Q, embarked_S, prefix_name_Master, \
+    prefix_name_Miss, prefix_name_Mlle, prefix_name_Mr, prefix_name_Mrs, \
+    prefix_name_Rev, ticket_type_CA, ticket_type_DIGITS_ONLY, ticket_type_FCC, \
+    ticket_type_LINE, ticket_type_PC, ticket_type_SC, ticket_type_SCH, \
+    ticket_type_SO_PP, ticket_type_SOC, ticket_type_SOTON, ticket_type_W_C, \
+    cabin_type_A, cabin_type_B, cabin_type_C, cabin_type_D, cabin_type_E, \
+    cabin_type_F, cabin_type_G, passengerid_bins_encoded, age_bins_encoded     
+    ]
+
+    preprocessed_array = np.array(preprocessed_list)
+    preprocessed_df = pd.DataFrame(preprocessed_array.reshape(1,-1))
+    
+    # rearrange 
+    return preprocessed_df
+
+
+def inference(model: LogisticRegression, X_data: pd.DataFrame):
+    """
+    Predict target label using X_data as input.
+    X_data should be the preprocessed data from preprocess_data.
+
+    Inputs 
+    ------ 
+    model : LogisticRegression 
+        Trained model. 
+    X_data : pd.DataFrame 
+        X_input as a df.
+    
+    Returns 
+    ------
+    preds : list 
+        List of predictions, 1/0 
+    """
+
+    preds = model.predict(X_data).tolist()
+
+    survive_dict = {
+        1: 'did not survive',
+        0: 'survived'
+    }
+
+    preds_mapped = [survive_dict.get(i,i) for i in preds]
+
+    return preds_mapped
