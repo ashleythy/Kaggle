@@ -1,5 +1,5 @@
 ## Objective 
-Build a model to predict if a passenger survives the Titanic shipwreck.
+Build a classification model to predict if a passenger survives the Titanic shipwreck.
 
 ## Source 
 Kaggle: https://www.kaggle.com/competitions/titanic

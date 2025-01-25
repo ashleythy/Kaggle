@@ -1,5 +1,5 @@
-# bp_challenge
+## Objective 
+Build a time-series model to forecast power demand.
 
-This notebook uses data from Gridwatch (https://www.gridwatch.templar.co.uk/) to predict UK power demand, using a SARIMA model.
-
-More notes are found in the notebook itself.
+## Source 
+Gridwatch: https://www.gridwatch.templar.co.uk/ 
